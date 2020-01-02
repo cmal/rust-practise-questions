@@ -1,1 +1,4 @@
 book
+*target*
+.DS_Store
+*lock
