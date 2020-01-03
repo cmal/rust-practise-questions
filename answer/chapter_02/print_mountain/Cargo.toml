@@ -1,0 +1,7 @@
+[package]
+name = "print_mountain"
+version = "0.1.0"
+authors = ["Yu Zhao <yu.zhao10@ele.me>"]
+edition = "2018"
+
+[dependencies]
