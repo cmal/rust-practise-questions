@@ -1,11 +1,13 @@
 fn swap(i: &mut i32, j: &mut i32) {
-    // TODO
+    let tmp = i.clone();
+    *i = j.clone();
+    *j = tmp;
 }
 
 fn main() {
-    let mut i = 3;
-    let mut j = 4;
+    let i: &mut i32 = &mut 3;
+    let j: &mut i32 = &mut 4;
     println!("i and j before swap: {}, {}", i, j);
-    swap(&mut i, &mut j);
+    swap(i, j);
     println!("i and j after swap: {}, {}", i, j);
 }
