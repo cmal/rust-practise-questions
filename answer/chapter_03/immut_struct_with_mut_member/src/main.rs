@@ -25,3 +25,9 @@ fn main() {
     d.mut_ref.set(3);
     println!("({}, {})", d.imm_val, d.mut_ref.get());
 }
+
+
+// Interior mutability
+// https://ricardomartins.cc/2016/06/08/interior-mutability
+// https://pitdicker.github.io/Interior-mutability-patterns/
+// https://www.reddit.com/r/rust/comments/a9v4g4/when_do_people_use_interior_mutability/
