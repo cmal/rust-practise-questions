@@ -1,10 +1,14 @@
 use std::boxed::Box;
+// use std::cell::{Cell, RefCell};
+// use std::rc::Rc;
 use std::cmp::Ordering;
+// use std::borrow::Borrow;
 
+// immutable version
 #[derive(Debug, Clone)]
 enum BinTree<T: Ord + Copy> {
     Leaf {
-        v: Box<T>,
+        v: T,
         l: Box<Self>,
         r: Box<Self>
     },
@@ -15,24 +19,27 @@ impl<T: Ord + Copy> BinTree<T> {
     fn new() -> Self {
         BinTree::Empty
     }
-    fn add(&self, val: T) -> Self {
+    fn add(&mut self, val: T) {
         match self {
-            BinTree::Empty => BinTree::Leaf {
-                v: Box::new(val),
-                l: Box::new(BinTree::Empty),
-                r: Box::new(BinTree::Empty)
+            BinTree::Empty => {
+                *self = BinTree::Leaf { // NOTE: 可以直接操作指针
+                    v: val,
+                    l: Box::new(BinTree::Empty),
+                    r: Box::new(BinTree::Empty)
+                }   
             },
-            BinTree::Leaf {v, l, r} => {
-                match val.cmp(&v) {
-                    Ordering::Less => BinTree::Leaf {
-                        v: (*v).clone(),
-                        l: Box::new(l.add(val)),
-                        r: Box::new((**r).clone())
+            // https://doc.rust-lang.org/stable/rust-by-example/scope/borrow/ref.html
+            BinTree::Leaf {ref v, ref mut l, ref mut r} => { // ^^ to better know `ref`, go to the above page
+                match val.cmp(v) {
+                    Ordering::Less => {
+                        // l.replace(Rc::new(*Rc::into_raw(l.into_inner()).add(val)));
+                        l.add(val);
                     },
-                    _ => BinTree::Leaf {
-                        v: (*v).clone(),
-                        l: Box::new((**l).clone()),
-                        r: Box::new(r.add(val))
+                    _ => {
+                        // r.replace(Rc::new(*Rc::into_raw(r.into_inner()).add(val)));
+                        // r.replace(Rc::new(r.into_inner().as_ref().borrow().add(val)));
+                        // r.replace_with(|old| Rc::new(old.clone().as_ref().borrow().add(val)));
+                        r.add(val);
                     }
                 }
             }
@@ -41,10 +48,10 @@ impl<T: Ord + Copy> BinTree<T> {
     fn min(&self) -> Option<T> {
         match self {
             BinTree::Empty => None,
-            BinTree::Leaf {v, l, r: _} => {
+            BinTree::Leaf {v, ref l, r: _} => {
                 let min = l.min();
                 match min {
-                    None => Some(**v),
+                    None => Some(*v),
                     _ => min
                 }
             }
@@ -53,10 +60,10 @@ impl<T: Ord + Copy> BinTree<T> {
     fn max(&self) -> Option<T> {
         match self {
             BinTree::Empty => None,
-            BinTree::Leaf {v, l: _, r} => {
+            BinTree::Leaf {v, l: _, ref r} => {
                 let max = r.max();
                 match max {
-                    None => Some(**v),
+                    None => Some(*v),
                     _ => max
                 }
             }
@@ -65,8 +72,13 @@ impl<T: Ord + Copy> BinTree<T> {
 }
 
 fn main() {
-    let bin_tree = BinTree::<i32>::new();
-    let bt = bin_tree.add(2).add(3).add(1).add(4).add(5).add(0);
+    let mut bt = BinTree::<i32>::new();
+    bt.add(2);
+    bt.add(3);
+    bt.add(1);
+    bt.add(4);
+    bt.add(5);
+    bt.add(0);
     println!("max: {}", bt.max().unwrap());
     println!("min: {}", bt.min().unwrap());
     println!("{:?}", bt);
