@@ -8,10 +8,12 @@ struct GeometricSeries {
 impl Iterator for GeometricSeries {
     type Item = i32;
     fn next(&mut self) -> Option<i32> {
-        
+
+        let tmp = self.current_number;
+
         self.current_number = self.current_number * self.ratio;
-        
-        Some(self.current_number)
+
+        Some(tmp)
     }
 }
 
