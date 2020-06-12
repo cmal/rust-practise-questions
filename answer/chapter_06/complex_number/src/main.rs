@@ -58,6 +58,29 @@ impl From<(isize, isize)> for ComplexNumber {
     }
 }
 
+trait CanMod {
+    fn my_mod(&self) -> f64;
+}
+
+impl CanMod for ComplexNumber {
+    fn my_mod(&self) -> f64 {
+        let square = (self.re * self.re + self.im * self.im) as f64;
+        square.sqrt()
+    }
+}
+
+impl CanMod for (isize, isize) {
+    fn my_mod(&self) -> f64 {
+        let square = (self.0 * self.0 + self.1 * self.1) as f64;
+        square.sqrt()
+    }
+}
+
+fn mod_complex<T: CanMod>(c: T) -> f64 {
+    c.my_mod()
+}
+
+
 fn main() {
     let c1 = ComplexNumber { re: 1, im: -2 };
     let c2 = ComplexNumber { re: -1, im: 3 };
@@ -83,4 +106,7 @@ fn main() {
     println!("{:?}", ComplexNumber::from(t));
     let c9: ComplexNumber = t.into();
     println!("{:?}", c9);
+
+    println!("{}", mod_complex(c9));
+    println!("{}", mod_complex(t));
 }
