@@ -1,4 +1,6 @@
 use std::ops::{ Add, Sub };
+use std::ops::Not;
+use std::cmp::PartialEq;
 
 #[derive(Debug)]
 struct ComplexNumber {
@@ -6,7 +8,7 @@ struct ComplexNumber {
     im: i32
 }
 
-impl Sub<ComplexNumber> for ComplexNumber {
+impl Sub<Self> for ComplexNumber {
     type Output = Self;
 
     fn sub(self, rhs: Self) -> Self {
@@ -17,7 +19,7 @@ impl Sub<ComplexNumber> for ComplexNumber {
     }
 }
 
-impl Add<ComplexNumber> for ComplexNumber {
+impl Add<Self> for ComplexNumber {
     type Output = Self;
 
     fn add(self, rhs: Self) -> Self {
@@ -28,6 +30,23 @@ impl Add<ComplexNumber> for ComplexNumber {
     }
 }
 
+impl Not for ComplexNumber {
+    type Output = Self;
+
+    fn not(self) -> Self::Output {
+        Self {
+            re: self.re,
+            im: - self.im
+        }
+    }
+}
+
+impl PartialEq<Self> for ComplexNumber {
+
+    fn eq(&self, rhs: &Self) -> bool {
+        self.re == rhs.re && self.im == rhs.im
+    }
+}
 
 fn main() {
     let c1 = ComplexNumber { re: 1, im: -2 };
@@ -35,6 +54,18 @@ fn main() {
     let c3 = ComplexNumber { re: 0, im: -4 };
     let c4 = ComplexNumber { re: 5, im: 7 };
 
+    let c5 = ComplexNumber { re: 3, im: -3 };
+    let c6 = ComplexNumber { re: 4, im: 0 };
+    let c7 = ComplexNumber { re: 3, im: 3 };
+    let c8 = ComplexNumber { re: 3, im: 3 };
+
     println!("{:?}", c1 + c2);
-    println!("{:?}", c3 - c4)
+    println!("{:?}", c3 - c4);
+
+    println!("{:?} == {:?} : {}", &c5, &c6, c5 == c6);
+    println!("{}", c5 == !c7);
+    println!("{}", c5 != !c8);
+
+    println!("{:?}", !c5);
+    println!("{:?}", !c6);
 }
