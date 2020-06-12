@@ -1,6 +1,7 @@
 use std::ops::{ Add, Sub };
 use std::ops::Not;
 use std::cmp::PartialEq;
+use std::convert::From;
 
 #[derive(Debug)]
 struct ComplexNumber {
@@ -48,6 +49,15 @@ impl PartialEq<Self> for ComplexNumber {
     }
 }
 
+impl From<(isize, isize)> for ComplexNumber {
+    fn from(t: (isize, isize)) -> Self {
+        Self {
+            re: t.0 as i32,
+            im: t.1 as i32
+        }
+    }
+}
+
 fn main() {
     let c1 = ComplexNumber { re: 1, im: -2 };
     let c2 = ComplexNumber { re: -1, im: 3 };
@@ -68,4 +78,9 @@ fn main() {
 
     println!("{:?}", !c5);
     println!("{:?}", !c6);
+
+    let t = (23, 17);
+    println!("{:?}", ComplexNumber::from(t));
+    let c9: ComplexNumber = t.into();
+    println!("{:?}", c9);
 }
